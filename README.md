@@ -42,6 +42,7 @@ This project is written in Python. The main dependencies are `numpy`.
   - [ ] RMSProp
   - [ ] Adam
 - [ ] *Additional Features*
+  - [ ] initialization
   - [ ] dropout
   - [ ] batch learning
   - [ ] CUDA support
