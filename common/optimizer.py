@@ -1,9 +1,6 @@
 from abc import *
 import numpy as np
-from typing import Any, Union, List
-
-from layer import Layer
-from activation import Activation
+from typing import Any
 
 class Optimizer(metaclass=ABCMeta): 
     def __init__(self) -> None:
