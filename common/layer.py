@@ -30,6 +30,7 @@ class Linear(Layer):
         return self.W @ x + np.tile(self.b, reps=(self.x.shape[0], 1, 1))
 
     def backward(self, grad: float, optimizer: Callable) -> float: 
+        # FIXME: check if it works properly in batched setting
         self.w_grad = grad @ self.x.T
         self.b_grad = grad
         self.x_grad = self.W.T @ grad
@@ -45,12 +46,13 @@ class Convolution(Layer):
         self.stride = stride
         self.padding = padding
         self.W = np.random.randn(out_channels, in_channels, kernel_size, kernel_size)
-        self.b = np.random.randn(out_channels, 1)
+        self.b = np.random.randn(out_channels)
 
     def forward(self, x: np.ndarray) -> np.ndarray: 
         if x.ndim == 3:
             x = x.reshape(1, *x.shape)
-        pass
+        # TODO: implement forward pass of convolution
     
     def backward(self, grad: float, optimizer: Callable) -> float: 
+        # TODO: implement backward pass of convolution
         pass
