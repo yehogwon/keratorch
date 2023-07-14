@@ -36,3 +36,21 @@ class Linear(Layer):
         self.W = optimizer(self.W, self.w_grad)
         self.b = optimizer(self.b, self.b_grad)
         return self.x_grad
+
+class Convolution(Layer): 
+    def __init__(self, in_channels: int, out_channels: int, kernel_size: int=3, stride: int=1, padding: int=0) -> None:
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = kernel_size
+        self.stride = stride
+        self.padding = padding
+        self.W = np.random.randn(out_channels, in_channels, kernel_size, kernel_size)
+        self.b = np.random.randn(out_channels, 1)
+
+    def forward(self, x: np.ndarray) -> np.ndarray: 
+        if x.ndim == 3:
+            x = x.reshape(1, *x.shape)
+        pass
+    
+    def backward(self, grad: float, optimizer: Callable) -> float: 
+        pass
