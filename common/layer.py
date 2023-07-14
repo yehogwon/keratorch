@@ -29,14 +29,13 @@ class Linear(Layer):
         if x.ndim == 1:
             x = x.reshape(1, -1)
         self.x = x
-        # return self.W @ x + np.tile(self.b, reps=(self.x.shape[0], 1, 1)) # Thank you, broadcasting!
-        return self.W @ x + self.b
+        # return self.W @ x + np.tile(self.b, reps=(self.x.shape[0], 1, 1))
+        return self.W @ x + self.b # Thank you, broadcasting!
 
     def backward(self, grad: np.ndarray, optimizer: Callable) -> np.ndarray: 
-        # FIXME: check if it works properly in batched setting
-        self.w_grad = grad @ self.x.T
+        self.w_grad = self.x.T @ grad
         self.b_grad = grad
-        self.x_grad = self.W.T @ grad
+        self.x_grad = grad @ self.W.T
         self.W = optimizer(self.W, self.w_grad)
         self.b = optimizer(self.b, self.b_grad)
         return self.x_grad
