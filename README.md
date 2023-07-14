@@ -14,6 +14,10 @@ This project is written in Python. The main dependencies are `numpy`.
 
 ## Milestones
 
+- [ ] GitHub CI/CD
+  - [ ] Python Linting
+  - [ ] Unit Testing
+  - [ ] Deployment
 - [ ] Overall backbone structure of the project
   - [ ] Layer base class
   - [ ] Activation base class
