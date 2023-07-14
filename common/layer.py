@@ -14,7 +14,7 @@ class Layer(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def backward(self, grad: float, optimizer: Callable) -> float: 
+    def backward(self, grad: Any, optimizer: Callable) -> Any: 
         pass
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
@@ -29,9 +29,10 @@ class Linear(Layer):
         if x.ndim == 1:
             x = x.reshape(1, -1)
         self.x = x
-        return self.W @ x + np.tile(self.b, reps=(self.x.shape[0], 1, 1))
+        # return self.W @ x + np.tile(self.b, reps=(self.x.shape[0], 1, 1)) # Thank you, broadcasting!
+        return self.W @ x + self.b
 
-    def backward(self, grad: float, optimizer: Callable) -> float: 
+    def backward(self, grad: np.ndarray, optimizer: Callable) -> np.ndarray: 
         # FIXME: check if it works properly in batched setting
         self.w_grad = grad @ self.x.T
         self.b_grad = grad
@@ -56,6 +57,6 @@ class Convolution(Layer):
         self.x = x
         return cross_correlate(x, self.W, self.stride, self.padding) + np.tile(self.b.reshape(self.out_channels, 1, 1), reps=[self.x.shape[0], 1, 1, 1])
     
-    def backward(self, grad: float, optimizer: Callable) -> float: 
+    def backward(self, grad: np.ndarray, optimizer: Callable) -> np.ndarray: 
         # TODO: implement backward pass of convolution
         pass
