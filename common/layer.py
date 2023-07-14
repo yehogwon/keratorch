@@ -3,6 +3,8 @@ import numpy as np
 
 from typing import Any, Callable
 
+from util.matrix import cross_correlate, convolve
+
 class Layer(metaclass=ABCMeta): 
     def __init__(self) -> None:
         pass
@@ -51,7 +53,8 @@ class Convolution(Layer):
     def forward(self, x: np.ndarray) -> np.ndarray: 
         if x.ndim == 3:
             x = x.reshape(1, *x.shape)
-        # TODO: implement forward pass of convolution
+        self.x = x
+        return cross_correlate(x, self.W, self.stride, self.padding) + np.tile(self.b.reshape(self.out_channels, 1, 1), reps=[self.x.shape[0], 1, 1, 1])
     
     def backward(self, grad: float, optimizer: Callable) -> float: 
         # TODO: implement backward pass of convolution
