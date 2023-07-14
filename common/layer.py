@@ -24,8 +24,10 @@ class Linear(Layer):
         self.b = np.random.randn(output_dim, 1)
 
     def forward(self, x: np.ndarray) -> np.ndarray: 
+        if x.ndim == 1:
+            x = x.reshape(1, -1)
         self.x = x
-        return self.W @ x + self.b
+        return self.W @ x + np.tile(self.b, reps=(self.x.shape[0], 1, 1))
 
     def backward(self, grad: float, optimizer: Callable) -> float: 
         self.w_grad = grad @ self.x.T
