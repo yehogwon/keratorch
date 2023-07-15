@@ -3,17 +3,37 @@ import numpy as np
 
 from typing import Any, Callable
 
-class Activation(metaclass=ABCMeta): 
-    def __init__(self) -> None:
-        pass
+from layer import Layer
 
-    @abstractmethod
+class Sigmoid(Layer): 
+    def op(self, x: np.ndarray) -> np.ndarray: 
+        return 1 / (1 + np.exp(-x))
+
     def forward(self, x: np.ndarray) -> np.ndarray: 
-        pass
+        self.x = x
+        return self.op(self.x)
+    
+    def backward(self, grad: float, optimizer: Callable=None) -> float: 
+        return grad * self.op(self.x) * (1 - self.op(self.x))
 
-    @abstractmethod
-    def backward(self, grad: float, optimizer: Callable) -> float: 
-        pass
+class tanh(Layer): 
+    def op(self, x: np.ndarray) -> np.ndarray: 
+        return np.tanh(x)
 
-    def __call__(self, *args: Any, **kwds: Any) -> Any:
-        return self.forward(*args, **kwds)
+    def forward(self, x: np.ndarray) -> np.ndarray: 
+        self.x = x
+        return self.op(self.x)
+    
+    def backward(self, grad: float, optimizer: Callable=None) -> float: 
+        return grad * (1 - self.op(self.x) ** 2)
+    
+class ReLU(Layer):
+    def op(self, x: np.ndarray) -> np.ndarray: 
+        return np.maximum(0, x)
+
+    def forward(self, x: np.ndarray) -> np.ndarray: 
+        self.x = x
+        return self.op(self.x)
+    
+    def backward(self, grad: float, optimizer: Callable=None) -> float: 
+        return grad * (self.x > 0).astype(float)
