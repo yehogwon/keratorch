@@ -33,9 +33,9 @@ class Linear(Layer):
         return self.W @ x + self.b # Thank you, broadcasting!
 
     def backward(self, grad: np.ndarray, optimizer: Callable) -> np.ndarray: 
-        self.w_grad = self.x.T @ grad
+        self.w_grad = grad @ self.x.T
         self.b_grad = grad
-        self.x_grad = grad @ self.W.T
+        self.x_grad = self.W.T @ grad
         self.W = optimizer(self.W, self.w_grad)
         self.b = optimizer(self.b, self.b_grad)
         return self.x_grad
