@@ -5,9 +5,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from abc import *
 import numpy as np
 
-from typing import Any, Callable
+from typing import Any, Callable, List
 
-from array import GradArray, expand
+from common.array import GradArray, expand
 from util.matrix import cross_correlate, convolve
 
 class Layer(metaclass=ABCMeta): 
@@ -18,9 +18,14 @@ class Layer(metaclass=ABCMeta):
     def forward(self, x: np.ndarray) -> np.ndarray: 
         pass
 
-    @abstractmethod
-    def backward(self, optimizer: Callable) -> Any: 
-        pass
+    def get_params(self) -> List[GradArray]: 
+        params = []
+        for _, v in self.__dict__.items():
+            if isinstance(v, GradArray):
+                params.append(v)
+            elif isinstance(v, Layer):
+                params += v.get_params()
+        return params
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         return self.forward(*args, **kwds)
@@ -30,17 +35,10 @@ class Linear(Layer):
         self.W = GradArray(np.random.randn(output_dim, input_dim))
         self.b = GradArray(np.random.randn(output_dim))
 
-    def forward(self, x: np.ndarray) -> GradArray: 
-        self.x = x
+    def forward(self, x: GradArray) -> GradArray: 
         # return GradArray(x) @ self.W.T  + self.b
         new_b = self.b if x.ndim == 1 else expand(self.b, x.shape[0])
-        return GradArray(x) @ self.W.T + new_b # Do not use broadcasting since it is too complicated to implement by my own
-
-    def backward(self, optimizer: Callable) -> np.ndarray: 
-        self.W = optimizer(self.W, self.W._grad)
-        self.b = optimizer(self.b, self.b._grad)
-
-        return self.x_grad
+        return x @ self.W.T + new_b # Do not use broadcasting since it is too complicated to implement by my own
 
 class Convolution(Layer): 
     def __init__(self, in_channels: int, out_channels: int, kernel_size: int=3, stride: int=1, padding: int=0) -> None:

@@ -9,7 +9,7 @@ import numpy as np
 from typing import Optional, Union, Any, Tuple, List
 from numbers import Number
 
-from grad import *
+from common.grad import *
 from util import matrix
 
 # FIXME: What if :: A = A + B

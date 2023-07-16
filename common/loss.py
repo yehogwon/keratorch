@@ -1,8 +1,12 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from abc import *
 import numpy as np
 
 from typing import Any, Union
-from array import GradArray, sum, l2_norm_square
+from common.array import GradArray, sum, l2_norm_square
 
 class Loss(metaclass=ABCMeta): 
     def __init__(self) -> None:
