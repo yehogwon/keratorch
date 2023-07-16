@@ -49,7 +49,7 @@ class GradArray:
     @property
     def T(self) -> 'GradArray':
         grad_T = None if self._grad is None else self._grad.T
-        return GradArray(self._array.copy().T, grad_T, grad_op=TransposeGrad())
+        return GradArray(self._array.copy().T, grad_T, grad_op=TransposeGrad(self))
 
     def __add__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         return GradArray(self._array + rhs._array, grad_op=AddGrad(self, rhs))
@@ -105,7 +105,7 @@ class GradArray:
 def expand(arr: GradArray, dim: int) -> GradArray: # only supports vector to 2-dim array (matrix)
     if arr.n_dim > 1: 
         raise ValueError("expand only works for 1-dim array (vector)")
-    return GradArray(np.tile(arr._array, reps=(dim, 1)), grad_op=ExpandGrad())
+    return GradArray(np.tile(arr._array, reps=(dim, 1)), grad_op=ExpandGrad(arr))
 
 def sum(arr: GradArray, axis: int) -> GradArray: 
     return GradArray(np.sum(arr._array, axis=axis), grad_op=SumGrad(arr))

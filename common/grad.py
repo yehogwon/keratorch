@@ -37,9 +37,6 @@ class ReshapeGrad(Grad):
         return (grad.reshape(*self._inputs.shape), )
 
 class TransposeGrad(Grad):
-    def __init__(self) -> None:
-        super().__init__((None, ))
-
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
         return (grad.T, )
 
@@ -52,8 +49,6 @@ class MatMulGrad(Grad):
         return (grad @ self._inputs[1]._array.T, self._inputs[0]._array.T @ grad)
 
 class ExpandGrad(Grad): 
-    def __init__(self) -> None:
-        super().__init__((None, ))
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
         return (np.mean(grad, axis=0), )
 
