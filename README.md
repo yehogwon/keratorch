@@ -16,7 +16,9 @@ This project is written in Python. The main dependencies are `numpy`.
 
 ## Milestones
 
-> 🔥 **Feature, Not a Bug**: It should be tested if networks operate properly without batch. 
+> 🔥 **Feature, Not a Bug**
+> - It should be tested if networks operate properly without batch. 
+> - The gradient is not accumulated, which may cause problems when the same variable is used in different layers. 
 
 - [x] 🌟 Array class supporting auto gradient calculation
   - [x] Basic array class
