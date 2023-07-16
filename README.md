@@ -37,6 +37,7 @@ This project is written in Python. The main dependencies are `numpy`.
     - [ ] Element-wise Multiplication
     - [ ] Indexing
     - [ ] Slicing
+    - [ ] In-place operations support
   - [x] Gradient Calculation
     - [x] Identity
     - [x] Add (variable number of inputs)
