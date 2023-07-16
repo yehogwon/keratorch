@@ -1,9 +1,13 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from abc import *
 import numpy as np
 
 from typing import Any, Callable
 
-from layer import Layer
+from common.layer import Layer
 
 class Sigmoid(Layer): 
     def op(self, x: np.ndarray) -> np.ndarray: 

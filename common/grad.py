@@ -6,7 +6,8 @@ from abc import *
 
 import numpy as np
 
-from typing import Any, Tuple
+from typing import Any, Tuple, Union
+from numbers import Number
 
 # TODO: other functionalities such as indexing, slicing, ...
 class Grad(metaclass=ABCMeta): 
@@ -19,6 +20,9 @@ class Grad(metaclass=ABCMeta):
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         return self.backward(*args, **kwds)
+    
+    def is_leaf(self) -> bool: 
+        return len(self._inputs) == 0
 
 class IdentityGrad(Grad):
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
@@ -46,4 +50,19 @@ class MatMulGrad(Grad):
 
 class ExpandGrad(Grad): 
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
-        return (np.mean(grad, axis=0), None)
+        return (np.mean(grad, axis=0), )
+
+class SumGrad(Grad): 
+    def backward(self, grad: Union[float, np.ndarray]) -> Tuple[np.ndarray]: # arr
+        if isinstance(grad, Number): 
+            grad = np.array(grad, dtype=np.float64)
+        reps = (a // b for a, b in zip(self._inputs[0].shape, grad.shape))
+        return (np.tile(grad, reps), )
+
+class PowerGrad(Grad): 
+    def __init__(self, input_, exp) -> None:
+        super().__init__(input_)
+        self._exp = exp
+    
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
+        return (grad * self._exp * np.power(self._inputs[0]._array, self._exp - 1), )
