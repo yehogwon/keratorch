@@ -32,8 +32,8 @@ class Layer(metaclass=ABCMeta):
 
 class Linear(Layer): 
     def __init__(self, input_dim: int, output_dim: int) -> None:
-        self.W = GradArray(np.random.randn(output_dim, input_dim))
-        self.b = GradArray(np.random.randn(output_dim))
+        self.W = GradArray(np.random.randn(output_dim, input_dim), name='weight')
+        self.b = GradArray(np.random.randn(output_dim), name='bias')
 
     def forward(self, x: GradArray) -> GradArray: 
         # return GradArray(x) @ self.W.T  + self.b

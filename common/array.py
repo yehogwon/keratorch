@@ -15,10 +15,11 @@ from util import matrix
 # FIXME: What if :: A = A + B
 # TODO: other functionalities such as indexing, slicing, ...
 class GradArray: 
-    def __init__(self, array: Optional[np.ndarray]=None, grad: Optional[np.ndarray]=None, grad_op: Optional[Grad]=None) -> None:
+    def __init__(self, array: np.ndarray, grad: Optional[np.ndarray]=None, grad_op: Optional[Grad]=None, name: str='') -> None:
         self._array: np.ndarray = array
         self._grad: np.ndarray = grad
         self._grad_op: Grad = grad_op
+        self._name: str = name
     
     def backward(self, grad: np.ndarray) -> None:
         self._grad = grad
@@ -98,6 +99,9 @@ class GradArray:
     
     def __pow__(self, exponent: float) -> 'GradArray':
         return GradArray(np.power(self._array, exponent), grad_op=PowerGrad(self, exponent))
+    
+    def __repr__(self) -> str:
+        return f'GradArray(name={self._name}, shape={self.shape}, grad_op={self._grad_op.__class__.__name__})'
 
 def expand(arr: GradArray, dim: int) -> GradArray: # only supports vector to 2-dim array (matrix)
     if arr.n_dim > 1: 
