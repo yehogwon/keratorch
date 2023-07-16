@@ -50,6 +50,12 @@ class GradArray:
     def T(self) -> 'GradArray':
         grad_T = None if self._grad is None else self._grad.T
         return GradArray(self._array.copy().T, grad_T, grad_op=TransposeGrad(self))
+    
+    def item(self) -> Number: 
+        return self._array.item()
+    
+    def grad_item(self) -> Number:
+        return self._grad.item()
 
     def __add__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         return GradArray(self._array + rhs._array, grad_op=AddGrad(self, rhs))
