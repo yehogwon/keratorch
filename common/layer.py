@@ -1,8 +1,13 @@
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from abc import *
 import numpy as np
 
 from typing import Any, Callable
 
+from array import GradArray, expand
 from util.matrix import cross_correlate, convolve
 
 class Layer(metaclass=ABCMeta): 
@@ -14,7 +19,7 @@ class Layer(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def backward(self, grad: Any, optimizer: Callable) -> Any: 
+    def backward(self, optimizer: Callable) -> Any: 
         pass
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
@@ -22,22 +27,19 @@ class Layer(metaclass=ABCMeta):
 
 class Linear(Layer): 
     def __init__(self, input_dim: int, output_dim: int) -> None:
-        self.W = np.random.randn(output_dim, input_dim)
-        self.b = np.random.randn(output_dim, 1)
+        self.W = GradArray(np.random.randn(output_dim, input_dim))
+        self.b = GradArray(np.random.randn(output_dim))
 
-    def forward(self, x: np.ndarray) -> np.ndarray: 
-        if x.ndim == 1:
-            x = x.reshape(1, -1)
+    def forward(self, x: np.ndarray) -> GradArray: 
         self.x = x
-        # return self.W @ x + np.tile(self.b, reps=(self.x.shape[0], 1, 1))
-        return self.W @ x + self.b # Thank you, broadcasting!
+        # return GradArray(x) @ self.W.T  + self.b
+        new_b = self.b if x.ndim == 1 else expand(self.b, x.shape[0])
+        return GradArray(x) @ self.W.T + new_b # Do not use broadcasting since it is too complicated to implement by my own
 
-    def backward(self, grad: np.ndarray, optimizer: Callable) -> np.ndarray: 
-        self.w_grad = grad @ self.x.T
-        self.b_grad = grad
-        self.x_grad = self.W.T @ grad
-        self.W = optimizer(self.W, self.w_grad)
-        self.b = optimizer(self.b, self.b_grad)
+    def backward(self, optimizer: Callable) -> np.ndarray: 
+        self.W = optimizer(self.W, self.W._grad)
+        self.b = optimizer(self.b, self.b._grad)
+
         return self.x_grad
 
 class Convolution(Layer): 
