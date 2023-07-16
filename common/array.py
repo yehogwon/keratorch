@@ -13,7 +13,6 @@ from common.grad import *
 from util import matrix
 
 # FIXME: What if :: A = A + B
-# TODO: other functionalities such as indexing, slicing, ...
 class GradArray: 
     def __init__(self, array: np.ndarray, grad: Optional[np.ndarray]=None, grad_op: Optional[Grad]=None, name: str='') -> None:
         self._array: np.ndarray = array
@@ -69,7 +68,6 @@ class GradArray:
     def __rsub__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
         return GradArray(lhs._array - self._array, grad_op=AddGrad(lhs, -self))
     
-    # TODO: elementwise multiplication support (backward)
     def __mul__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number):
             rhs = GradArray(np.array(rhs, dtype=np.float64))
@@ -84,7 +82,6 @@ class GradArray:
             raise TypeError(f"unsupported type {type(lhs)}")
         return GradArray(lhs._array * self._array, grad_op=ScalarMulGrad(lhs, self))
     
-    # TODO: elementwise division support (backward)
     def __truediv__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number):
             pass

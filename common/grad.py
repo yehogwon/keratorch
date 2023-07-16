@@ -9,7 +9,6 @@ import numpy as np
 from typing import Any, Tuple, Union
 from numbers import Number
 
-# TODO: other functionalities such as indexing, slicing, ...
 class Grad(metaclass=ABCMeta): 
     def __init__(self, *inputs) -> None:
         self._inputs = inputs

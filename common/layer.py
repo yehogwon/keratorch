@@ -40,6 +40,7 @@ class Linear(Layer):
         new_b = self.b if x.n_dim == 1 else expand(self.b, x.shape[0])
         return x @ self.W.T + new_b # Do not use broadcasting since it is too complicated to implement by my own
 
+# FIRE: This convolution alyer is poorly implemented. It does not use my auto-grad framework. 
 class Convolution(Layer): 
     def __init__(self, in_channels: int, out_channels: int, kernel_size: int=3, stride: int=1, padding: int=0) -> None:
         self.in_channels = in_channels
@@ -57,5 +58,4 @@ class Convolution(Layer):
         return cross_correlate(x, self.W, self.stride, self.padding) + np.tile(self.b.reshape(self.out_channels, 1, 1), reps=[self.x.shape[0], 1, 1, 1])
     
     def backward(self, grad: np.ndarray, optimizer: Callable) -> np.ndarray: 
-        # TODO: implement backward pass of convolution
         pass
