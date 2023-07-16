@@ -46,4 +46,17 @@ class MatMulGrad(Grad):
 
 class ExpandGrad(Grad): 
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
-        return (np.mean(grad, axis=0), None)
+        return (np.mean(grad, axis=0), )
+
+class SumGrad(Grad): 
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: # arr
+        reps = (a // b for a, b in zip(self._inputs[0].shape, grad.shape))
+        return (np.tile(grad, reps), )
+
+class PowerGrad(Grad): 
+    def __init__(self, input_, exp) -> None:
+        super().__init__(input_)
+        self._exp = exp
+    
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
+        return (grad * self._exp * np.power(self._input._array, self._exp - 1), )

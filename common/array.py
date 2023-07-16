@@ -85,8 +85,20 @@ class GradArray:
     
     def __neg__(self) -> 'GradArray':
         return GradArray(-self._array.copy(), grad_op=ScalarMulGrad(self, -1))
+    
+    def __pow__(self, exponent: float) -> 'GradArray':
+        return GradArray(np.power(self._array, exponent), grad_op=PowerGrad(self, exponent))
 
-def expand(arr, dim: int) -> GradArray: # only supports vector to 2-dim array (matrix)
+def expand(arr: GradArray, dim: int) -> GradArray: # only supports vector to 2-dim array (matrix)
     if arr.n_dim > 1: 
         raise ValueError("expand only works for 1-dim array (vector)")
-    return GradArray(np.tile(arr._array, reps=(dim, 1)), grad_op=ExpandGrad(arr, dim))
+    return GradArray(np.tile(arr._array, reps=(dim, 1)), grad_op=ExpandGrad())
+
+def sum(arr: GradArray, axis: int) -> GradArray: 
+    return GradArray(np.sum(arr._array, axis=axis), grad_op=SumGrad(arr))
+
+def power(arr: GradArray, exponent: float) -> GradArray:
+    return GradArray(np.power(arr._array, exponent), grad_op=PowerGrad(arr, exponent))
+
+def l2_norm_square(arr: GradArray) -> GradArray: 
+    return arr @ arr.T
