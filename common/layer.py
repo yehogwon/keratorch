@@ -37,7 +37,7 @@ class Linear(Layer):
 
     def forward(self, x: GradArray) -> GradArray: 
         # return GradArray(x) @ self.W.T  + self.b
-        new_b = self.b if x.ndim == 1 else expand(self.b, x.shape[0])
+        new_b = self.b if x.n_dim == 1 else expand(self.b, x.shape[0])
         return x @ self.W.T + new_b # Do not use broadcasting since it is too complicated to implement by my own
 
 class Convolution(Layer): 

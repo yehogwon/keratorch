@@ -30,8 +30,9 @@ class MSE(Loss):
     def forward(self, y: GradArray, gt: GradArray) -> float: 
         self.y = y
         self.gt = gt
-        self.out = sum(l2_norm_square(y - gt)) / y.shape[0]
+        self.out = sum(l2_norm_square(y - gt, axis=1), axis=0) / y.shape[0]
+        return self.out
 
     def backward(self, grad: float=1) -> GradArray: 
         self.out.backward(grad)
-        return self.y.grad
+        return self.y._grad

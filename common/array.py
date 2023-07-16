@@ -23,10 +23,13 @@ class GradArray:
     def backward(self, grad: np.ndarray) -> None:
         self._grad = grad
         if self._grad_op: 
-            post_grads = self._grad_op(self._grad)
-            for i, post_grad in enumerate(post_grads):
-                if isinstance(self._grad_op._inputs[i], GradArray): 
-                    self._grad_op._inputs[i].backward(post_grad)
+            upstream_grads = self._grad_op(self._grad)
+            for i, upstream_grad in enumerate(upstream_grads):
+                if self._grad_op.is_leaf(): 
+                    break
+                prev_input = self._grad_op._inputs[i]
+                if isinstance(prev_input, GradArray): 
+                    prev_input.backward(upstream_grad)
     
     def reshape(self, *args: Any, **kwargs: Any) -> 'GradArray':
         _array_, _grad_ = self._array.copy(), self._grad.copy()
@@ -63,19 +66,29 @@ class GradArray:
     def __rsub__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
         return GradArray(lhs._array - self._array, grad_op=AddGrad(lhs, -self))
     
+    # TODO: elementwise multiplication support (backward)
     def __mul__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
-        return GradArray(self._array * rhs._array, grad_op=ScalarMulGrad(self, rhs))
+        if isinstance(rhs, Number):
+            rhs = GradArray(rhs)
+        else: 
+            raise TypeError(f"unsupported type {type(rhs)}")
+        return GradArray(self._array * rhs._array, grad_op=ScalarMulGrad(rhs, self))
     
     def __rmul__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(lhs, Number):
             lhs = GradArray(lhs)
+        else: 
+            raise TypeError(f"unsupported type {type(lhs)}")
         return GradArray(lhs._array * self._array, grad_op=ScalarMulGrad(lhs, self))
     
+    # TODO: elementwise division support (backward)
     def __truediv__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
-        return GradArray(self._array / rhs._array, grad_op=ScalarMulGrad(self, 1 / rhs))
-    
-    def __rtruediv__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
-        return GradArray(lhs._array / self._array, grad_op=ScalarMulGrad(lhs, 1 / self))
+        if isinstance(rhs, Number):
+            rhs = GradArray(rhs)
+        else: 
+            raise TypeError(f"unsupported type {type(rhs)}")
+        inv_rhs = GradArray(1 / rhs._array)
+        return GradArray(self._array / rhs._array, grad_op=ScalarMulGrad(inv_rhs, self))
     
     def __matmul__(self, rhs: 'GradArray') -> 'GradArray':
         return GradArray(self._array @ rhs._array, grad_op=MatMulGrad(self, rhs))
@@ -84,7 +97,8 @@ class GradArray:
         return GradArray(lhs._array @ self._array, grad_op=MatMulGrad(lhs, self))
     
     def __neg__(self) -> 'GradArray':
-        return GradArray(-self._array.copy(), grad_op=ScalarMulGrad(self, -1))
+        minus = GradArray(np.array(-1))
+        return GradArray(-self._array.copy(), grad_op=ScalarMulGrad(minus, self))
     
     def __pow__(self, exponent: float) -> 'GradArray':
         return GradArray(np.power(self._array, exponent), grad_op=PowerGrad(self, exponent))
@@ -97,8 +111,5 @@ def expand(arr: GradArray, dim: int) -> GradArray: # only supports vector to 2-d
 def sum(arr: GradArray, axis: int) -> GradArray: 
     return GradArray(np.sum(arr._array, axis=axis), grad_op=SumGrad(arr))
 
-def power(arr: GradArray, exponent: float) -> GradArray:
-    return GradArray(np.power(arr._array, exponent), grad_op=PowerGrad(arr, exponent))
-
-def l2_norm_square(arr: GradArray) -> GradArray: 
-    return arr @ arr.T
+def l2_norm_square(arr: GradArray, axis: int) -> GradArray: 
+    return sum(arr ** 2, axis=axis)
