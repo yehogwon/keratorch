@@ -37,6 +37,9 @@ class ReshapeGrad(Grad):
         return (grad.reshape(*self._inputs.shape), )
 
 class TransposeGrad(Grad):
+    def __init__(self) -> None:
+        super().__init__((None, ))
+
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
         return (grad.T, )
 

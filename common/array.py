@@ -22,11 +22,9 @@ class GradArray:
     
     def backward(self, grad: np.ndarray) -> None:
         self._grad = grad
-        if self._grad_op: 
+        if self._grad_op and not self._grad_op.is_leaf(): 
             upstream_grads = self._grad_op(self._grad)
             for i, upstream_grad in enumerate(upstream_grads):
-                if self._grad_op.is_leaf(): 
-                    break
                 prev_input = self._grad_op._inputs[i]
                 if isinstance(prev_input, GradArray): 
                     prev_input.backward(upstream_grad)
@@ -40,9 +38,7 @@ class GradArray:
     @property
     def shape(self) -> Tuple[int]:
         if self._array is None:
-            raise ValueError("either array or grad is not initialized")
-        if self._grad is not None and self._array.shape != self._grad.shape:
-            raise ValueError(f"shape of array and grad must be same, but got {self._array.shape} and {self._grad.shape}")
+            raise ValueError("initialization is required")
         return self._array.shape
     
     @property
@@ -52,7 +48,7 @@ class GradArray:
     @property
     def T(self) -> 'GradArray':
         grad_T = None if self._grad is None else self._grad.T
-        return GradArray(self._array.copy().T, grad_T, grad_op=TransposeGrad(self))
+        return GradArray(self._array.copy().T, grad_T, grad_op=TransposeGrad())
 
     def __add__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         return GradArray(self._array + rhs._array, grad_op=AddGrad(self, rhs))
@@ -69,14 +65,14 @@ class GradArray:
     # TODO: elementwise multiplication support (backward)
     def __mul__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number):
-            rhs = GradArray(rhs)
+            rhs = GradArray(np.array(rhs))
         else: 
             raise TypeError(f"unsupported type {type(rhs)}")
         return GradArray(self._array * rhs._array, grad_op=ScalarMulGrad(rhs, self))
     
     def __rmul__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(lhs, Number):
-            lhs = GradArray(lhs)
+            lhs = GradArray(np.array(lhs))
         else: 
             raise TypeError(f"unsupported type {type(lhs)}")
         return GradArray(lhs._array * self._array, grad_op=ScalarMulGrad(lhs, self))
@@ -84,11 +80,11 @@ class GradArray:
     # TODO: elementwise division support (backward)
     def __truediv__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number):
-            rhs = GradArray(rhs)
+            rhs = np.array(rhs)
         else: 
             raise TypeError(f"unsupported type {type(rhs)}")
-        inv_rhs = GradArray(1 / rhs._array)
-        return GradArray(self._array / rhs._array, grad_op=ScalarMulGrad(inv_rhs, self))
+        inv_rhs_ = GradArray(1 / rhs)
+        return GradArray(self._array / rhs, grad_op=ScalarMulGrad(inv_rhs_, self))
     
     def __matmul__(self, rhs: 'GradArray') -> 'GradArray':
         return GradArray(self._array @ rhs._array, grad_op=MatMulGrad(self, rhs))

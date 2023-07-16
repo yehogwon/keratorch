@@ -34,5 +34,5 @@ class MSE(Loss):
         return self.out
 
     def backward(self, grad: float=1) -> GradArray: 
-        self.out.backward(grad)
+        self.out.backward(np.array(grad))
         return self.y._grad

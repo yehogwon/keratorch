@@ -20,10 +20,10 @@ class Optimizer(metaclass=ABCMeta):
         return self.step(*args, **kwds)
 
 class SGD(Optimizer): 
-    def __init__(self, *params: Union[Tuple[GradArray], List[GradArray]],  lr: float) -> None:
+    def __init__(self, params: List[GradArray],  lr: float) -> None:
         super().__init__(*params)
         self._lr = lr
     
     def step(self) -> None: 
         for param in self._params:
-            param._array -= param.grad * self._lr
+            param._array -= param._grad * self._lr
