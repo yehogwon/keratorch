@@ -66,14 +66,14 @@ class GradArray:
     # TODO: elementwise multiplication support (backward)
     def __mul__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number):
-            rhs = GradArray(np.array(rhs, dtype=np.float))
+            rhs = GradArray(np.array(rhs, dtype=np.float64))
         else: 
             raise TypeError(f"unsupported type {type(rhs)}")
         return GradArray(self._array * rhs._array, grad_op=ScalarMulGrad(rhs, self))
     
     def __rmul__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(lhs, Number):
-            lhs = GradArray(np.array(lhs, dtype=np.float))
+            lhs = GradArray(np.array(lhs, dtype=np.float64))
         else: 
             raise TypeError(f"unsupported type {type(lhs)}")
         return GradArray(lhs._array * self._array, grad_op=ScalarMulGrad(lhs, self))
@@ -93,7 +93,7 @@ class GradArray:
         return GradArray(lhs._array @ self._array, grad_op=MatMulGrad(lhs, self))
     
     def __neg__(self) -> 'GradArray':
-        minus = GradArray(np.array(-1, dtype=np.float))
+        minus = GradArray(np.array(-1, dtype=np.float64))
         return GradArray(-self._array.copy(), grad_op=ScalarMulGrad(minus, self))
     
     def __pow__(self, exponent: float) -> 'GradArray':

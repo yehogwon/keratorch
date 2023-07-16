@@ -55,7 +55,7 @@ class ExpandGrad(Grad):
 class SumGrad(Grad): 
     def backward(self, grad: Union[float, np.ndarray]) -> Tuple[np.ndarray]: # arr
         if isinstance(grad, Number): 
-            grad = np.array(grad, dtype=np.float)
+            grad = np.array(grad, dtype=np.float64)
         reps = (a // b for a, b in zip(self._inputs[0].shape, grad.shape))
         return (np.tile(grad, reps), )
 
