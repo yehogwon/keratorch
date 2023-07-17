@@ -8,6 +8,7 @@ import numpy as np
 from typing import Any, Callable, List
 
 from common.array import GradArray, expand
+from common.init import he_initialize, zero_initialize
 from util.matrix import cross_correlate, convolve
 
 class Layer(metaclass=ABCMeta): 
@@ -34,6 +35,9 @@ class Linear(Layer):
     def __init__(self, input_dim: int, output_dim: int) -> None:
         self.W = GradArray(np.random.randn(output_dim, input_dim), name='weight')
         self.b = GradArray(np.random.randn(output_dim), name='bias')
+
+        he_initialize(self.W)
+        zero_initialize(self.b)
 
     def forward(self, x: GradArray) -> GradArray: 
         # return GradArray(x) @ self.W.T  + self.b
