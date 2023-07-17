@@ -76,29 +76,32 @@ class GradArray:
             lhs = GradArray(np.array(lhs, dtype=np.float64))
         return GradArray(lhs._array - self._array, grad_op=AddGrad(lhs, -self))
     
+    # TODO: check if elementwise operation & reciprocal works properly
     def __mul__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number):
             rhs = GradArray(np.array(rhs, dtype=np.float64))
+            grad = ScalarMulGrad(rhs, self)
         else: 
-            raise TypeError(f"unsupported type {type(rhs)}")
-        return GradArray(self._array * rhs._array, grad_op=ScalarMulGrad(rhs, self))
+            grad = ElemMulGrad(self, rhs)
+        return GradArray(self._array * rhs._array, grad_op=grad)
     
     def __rmul__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(lhs, Number):
             lhs = GradArray(np.array(lhs, dtype=np.float64))
+            grad = ScalarMulGrad(lhs, self)
         else: 
-            raise TypeError(f"unsupported type {type(lhs)}")
-        return GradArray(lhs._array * self._array, grad_op=ScalarMulGrad(lhs, self))
+            grad = ElemMulGrad(lhs, self)
+        return GradArray(lhs._array * self._array, grad_op=grad)
     
     def __truediv__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
-        if not isinstance(rhs, Number):
-            raise TypeError(f"unsupported type {type(rhs)}")
-        return self * (1 / rhs)
+        if isinstance(rhs, Number): 
+            rhs = GradArray(np.array(rhs, dtype=np.float64))
+        return self * recip(rhs)
     
     def __rtruediv__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
-        if not isinstance(lhs, Number):
-            raise TypeError(f"unsupported type {type(rhs)}")
-        inv = GradArray(np.array(1 / self._array, dtype=np.float64), grad_op=PowerGrad(self, -1))
+        if isinstance(lhs, Number):
+            lhs = GradArray(np.array(lhs, dtype=np.float64))
+        inv = recip(self)
         return lhs * inv
     
     def __matmul__(self, rhs: 'GradArray') -> 'GradArray':
@@ -130,3 +133,6 @@ def l2_norm_square(arr: GradArray, axis: int) -> GradArray:
 
 def exp(arr: GradArray) -> GradArray: 
     return GradArray(np.exp(arr._array), grad_op=ExpGrad(arr))
+
+def recip(arr: GradArray) -> GradArray: 
+    return GradArray(np.reciprocal(arr._array), grad_op=RecipGrad(arr))

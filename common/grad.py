@@ -43,6 +43,10 @@ class ScalarMulGrad(Grad): # order: (scalar) * (array)
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
         return (grad * self._inputs[1]._array, grad * self._inputs[0]._array)
 
+class ElemMulGrad(Grad): 
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
+        return (grad * self._inputs[1]._array, grad * self._inputs[0]._array)
+
 class MatMulGrad(Grad): 
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
         return (grad @ self._inputs[1]._array.T, self._inputs[0]._array.T @ grad)
@@ -65,6 +69,10 @@ class PowerGrad(Grad):
     
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
         return (grad * self._exp * np.power(self._inputs[0]._array, self._exp - 1), )
+
+class RecipGrad(Grad): 
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
+        return (grad * -1 / np.square(self._inputs[0]._array), )
 
 class ExpGrad(Grad): 
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
