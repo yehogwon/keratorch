@@ -115,3 +115,6 @@ def sum(arr: GradArray, axis: int) -> GradArray:
 
 def l2_norm_square(arr: GradArray, axis: int) -> GradArray: 
     return sum(arr ** 2, axis=axis)
+
+def exp(arr: GradArray) -> GradArray: 
+    return GradArray(np.exp(arr._array), grad_op=ExpGrad(arr))

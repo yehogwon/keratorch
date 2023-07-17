@@ -1,43 +1,28 @@
 import os
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from abc import *
 import numpy as np
 
-from typing import Any, Callable
+from typing import Any, Callable, List
 
+from common.array import GradArray, exp
 from common.layer import Layer
 
-class Sigmoid(Layer): 
-    def op(self, x: np.ndarray) -> np.ndarray: 
-        return 1 / (1 + np.exp(-x))
+class Activation(Layer, metaclass=ABCMeta): 
+    def get_params(self) -> List[GradArray]:
+        return []
+
+class Sigmoid(Activation): 
+    def op(self, x: GradArray) -> GradArray: 
+        return 1 / (1 + exp(-x))
 
     def forward(self, x: np.ndarray) -> np.ndarray: 
         self.x = x
-        return self.op(self.x)
+        self.out = self.op(x)
+        return self.out
     
     def backward(self, grad: float, optimizer: Callable=None) -> float: 
-        return grad * self.op(self.x) * (1 - self.op(self.x))
-
-class tanh(Layer): 
-    def op(self, x: np.ndarray) -> np.ndarray: 
-        return np.tanh(x)
-
-    def forward(self, x: np.ndarray) -> np.ndarray: 
-        self.x = x
-        return self.op(self.x)
-    
-    def backward(self, grad: float, optimizer: Callable=None) -> float: 
-        return grad * (1 - self.op(self.x) ** 2)
-    
-class ReLU(Layer):
-    def op(self, x: np.ndarray) -> np.ndarray: 
-        return np.maximum(0, x)
-
-    def forward(self, x: np.ndarray) -> np.ndarray: 
-        self.x = x
-        return self.op(self.x)
-    
-    def backward(self, grad: float, optimizer: Callable=None) -> float: 
-        return grad * (self.x > 0).astype(float)
+        return grad * self.out * (1 - self.out)
