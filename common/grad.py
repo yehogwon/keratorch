@@ -22,6 +22,9 @@ class Grad(metaclass=ABCMeta):
     
     def is_leaf(self) -> bool: 
         return len(self._inputs) == 0
+    
+    def __repr__(self) -> str:
+        return self.__class__.__name__
 
 class IdentityGrad(Grad):
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
@@ -40,6 +43,10 @@ class TransposeGrad(Grad):
         return (grad.T, )
 
 class ScalarMulGrad(Grad): # order: (scalar) * (array)
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
+        return (grad * self._inputs[1]._array, grad * self._inputs[0]._array)
+
+class ElemMulGrad(Grad): 
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
         return (grad * self._inputs[1]._array, grad * self._inputs[0]._array)
 
@@ -65,6 +72,10 @@ class PowerGrad(Grad):
     
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
         return (grad * self._exp * np.power(self._inputs[0]._array, self._exp - 1), )
+
+class RecipGrad(Grad): 
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
+        return (grad * -1 / np.square(self._inputs[0]._array), )
 
 class ExpGrad(Grad): 
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
