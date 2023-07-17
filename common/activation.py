@@ -27,3 +27,7 @@ class Activation(Layer, metaclass=ABCMeta):
 class Sigmoid(Activation): 
     def op(self, x: GradArray) -> GradArray: 
         return 1 / (1 + exp(-x))
+
+class Tanh(Activation): 
+    def op(self, x: GradArray) -> GradArray: 
+        return (exp(x) - exp(-x)) / (exp(x) + exp(-x))
