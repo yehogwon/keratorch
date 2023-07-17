@@ -53,18 +53,18 @@ This project is written in Python. The main dependencies are `numpy`.
     - [ ] Max / Min
     - [ ] Indexing
     - [ ] Slicing
-- [x] Overall backbone structure of the project
+- [x] Overall backbone structure
   - [x] Layer base class
   - [x] Activation base class
   - [x] Loss base class
   - [x] Optimizer base class
-- [ ] Implement commonly used layers
+- [ ] layers
   - [x] Fully-connected layer
   - [ ] Convolutional layer
   - [ ] Max pooling layer
   - [ ] Average pooling layer
   - [ ] Batch normalization layer
-- [ ] Implement commonly used activation functions
+- [ ] activation functions (and their derivatives)
   - [ ] ReLU
   - [x] Sigmoid
   - [ ] Tanh
@@ -82,6 +82,7 @@ This project is written in Python. The main dependencies are `numpy`.
   - [ ] XOR binary classification
   - [ ] MNIST classification
 - [ ] *Additional Features*
+  - [ ] computational graph visualization
   - [ ] initialization
   - [ ] dropout
   - [ ] CUDA support
