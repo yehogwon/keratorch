@@ -1,8 +1,8 @@
-# KeraTorch : Keras-Like ML Framework
+# KeraTorch : PyTorch-Like ML Framework
 
 ## Introduction
 
-This project is a toy project to implement a Keras-like ML framework. The goal is to implement commonly used layers and optimizers, such as fully-connected layer, convolutional layer, ReLU activation, SGD optimizer, *etc*. 
+This project is a toy project to implement a PyTorch-like ML framework. The goal is to implement commonly used layers and optimizers, such as fully-connected layer, convolutional layer, ReLU activation, SGD optimizer, *etc*. 
 
 ## 📣 Shout Out To @omaraflak
 
