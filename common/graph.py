@@ -2,6 +2,8 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import graphviz
+
 from common.array import GradArray
 
 class GraphNode: 
@@ -20,6 +22,22 @@ class GraphNode:
         for child in self.children: 
             string += child.deep_string(prefix + '-- ')
         return string
+    
+    def __dot_language(self) -> str: 
+        dot = ''
+        for child in self.children: 
+            dot += f'"{self.array._name} {self.array.shape}" -> "{child.array._name} {child.array.shape}" [ label="{self.array._grad_op}"]; \n'
+            dot += child.dot_language_()
+        return dot
+
+    def dot_language(self) -> str: 
+        string = 'digraph G {\n'
+        string += self.__dot_language()
+        string += '}'
+        return string
+    
+    def dot_graph(self) -> graphviz.Digraph: 
+        return graphviz.Source(self.dot_language())
 
 def backward_graph(arr: GradArray) -> GraphNode:
     root = GraphNode(arr)

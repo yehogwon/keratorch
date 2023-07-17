@@ -22,6 +22,9 @@ class Grad(metaclass=ABCMeta):
     
     def is_leaf(self) -> bool: 
         return len(self._inputs) == 0
+    
+    def __repr__(self) -> str:
+        return self.__class__.__name__
 
 class IdentityGrad(Grad):
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
