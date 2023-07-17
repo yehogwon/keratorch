@@ -34,7 +34,7 @@ This project is written in Python. The main dependencies are `numpy`.
     - [x] L2 norm with Axis
     - [x] Reshape
     - [x] Backward Propagation
-    - [ ] Element-wise Multiplication
+    - [x] Element-wise Multiplication
     - [ ] Max / Min
     - [ ] Indexing
     - [ ] Slicing
@@ -49,7 +49,7 @@ This project is written in Python. The main dependencies are `numpy`.
     - [x] Expansion
     - [x] Sum
     - [x] Power
-    - [ ] Element-wise Multiplication
+    - [x] Element-wise Multiplication
     - [ ] Max / Min
     - [ ] Indexing
     - [ ] Slicing
@@ -67,7 +67,7 @@ This project is written in Python. The main dependencies are `numpy`.
 - [ ] activation functions (and their derivatives)
   - [ ] ReLU
   - [x] Sigmoid
-  - [ ] Tanh
+  - [x] Tanh
   - [ ] Softmax
 - [x] Implement commonly used loss functions
   - [x] Mean squared error
@@ -79,7 +79,7 @@ This project is written in Python. The main dependencies are `numpy`.
   - [ ] Adam
 - [ ] 🖥️ Demo
   - [x] OR binary classification
-  - [ ] XOR binary classification
+  - [x] XOR binary classification
   - [ ] MNIST classification
 - [ ] *Additional Features*
   - [ ] computational graph visualization
