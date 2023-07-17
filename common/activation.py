@@ -23,6 +23,3 @@ class Sigmoid(Activation):
         self.x = x
         self.out = self.op(x)
         return self.out
-    
-    def backward(self, grad: float, optimizer: Callable=None) -> float: 
-        return grad * self.out * (1 - self.out)
