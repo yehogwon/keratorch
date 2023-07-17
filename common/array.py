@@ -91,11 +91,15 @@ class GradArray:
         return GradArray(lhs._array * self._array, grad_op=ScalarMulGrad(lhs, self))
     
     def __truediv__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
-        if isinstance(rhs, Number):
-            pass
-        else: 
+        if not isinstance(rhs, Number):
             raise TypeError(f"unsupported type {type(rhs)}")
         return self * (1 / rhs)
+    
+    def __rtruediv__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if not isinstance(lhs, Number):
+            raise TypeError(f"unsupported type {type(rhs)}")
+        inv = GradArray(np.array(1 / self._array, dtype=np.float64), grad_op=PowerGrad(self, -1))
+        return lhs * inv
     
     def __matmul__(self, rhs: 'GradArray') -> 'GradArray':
         return GradArray(self._array @ rhs._array, grad_op=MatMulGrad(self, rhs))
