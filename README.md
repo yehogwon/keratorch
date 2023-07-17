@@ -51,9 +51,9 @@ This project is written in Python. The main dependencies are `numpy`.
     - [ ] Element-wise Multiplication
     - [ ] Indexing
     - [ ] Slicing
-- [ ] Overall backbone structure of the project
+- [x] Overall backbone structure of the project
   - [x] Layer base class
-  - [ ] Activation base class
+  - [x] Activation base class
   - [x] Loss base class
   - [x] Optimizer base class
 - [ ] Implement commonly used layers
@@ -64,7 +64,7 @@ This project is written in Python. The main dependencies are `numpy`.
   - [ ] Batch normalization layer
 - [ ] Implement commonly used activation functions
   - [ ] ReLU
-  - [ ] Sigmoid
+  - [x] Sigmoid
   - [ ] Tanh
   - [ ] Softmax
 - [x] Implement commonly used loss functions
