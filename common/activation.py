@@ -6,10 +6,13 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from abc import *
 import numpy as np
 
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Tuple
 
 from common.array import GradArray, exp
 from common.layer import Layer
+from common.grad import Grad
+
+from util import F
 
 class Activation(Layer, metaclass=ABCMeta): 
     @abstractmethod
@@ -26,8 +29,16 @@ class Activation(Layer, metaclass=ABCMeta):
 
 class Sigmoid(Activation): 
     def op(self, x: GradArray) -> GradArray: 
-        return 1 / (1 + exp(-x))
+        return GradArray(F.sigmoid(x._array), grad_op=SigmoidGrad(x), name='sigmoid')
+
+class SigmoidGrad(Grad): 
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
+        return (grad * F.sigmoid(self._inputs[0]._array) * (1 - F.sigmoid(self._inputs[0]._array)), )
 
 class Tanh(Activation): 
     def op(self, x: GradArray) -> GradArray: 
-        return (exp(x) - exp(-x)) / (exp(x) + exp(-x))
+        return GradArray(F.tanh(x._array), grad_op=TanhGrad(x), name='tanh')
+
+class TanhGrad(Grad): 
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
+        return (grad * (1 - F.tanh(self._inputs[0]._array) ** 2), )
