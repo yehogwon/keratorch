@@ -47,7 +47,6 @@ class GraphNode:
     def dot_graph_show(self) -> None: 
         graph_ = self.dot_graph()
         with tempfile.NamedTemporaryFile(suffix='.gv') as f:
-            print(f.name)
             f.write(graph_.source.encode('utf-8'))
             f.flush()
             graph_.render(f.name, view=True)
