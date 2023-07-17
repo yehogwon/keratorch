@@ -57,15 +57,23 @@ class GradArray:
         return self._grad.item()
 
     def __add__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if isinstance(rhs, Number): 
+            rhs = GradArray(np.array(rhs, dtype=np.float64))
         return GradArray(self._array + rhs._array, grad_op=AddGrad(self, rhs))
     
     def __radd__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if isinstance(lhs, Number):
+            lhs = GradArray(np.array(lhs, dtype=np.float64))
         return GradArray(lhs._array + self._array, grad_op=AddGrad(lhs, self))
     
     def __sub__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if isinstance(rhs, Number):
+            rhs = GradArray(np.array(rhs, dtype=np.float64))
         return GradArray(self._array - rhs._array, grad_op=AddGrad(self, -rhs))
     
     def __rsub__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if isinstance(lhs, Number):
+            lhs = GradArray(np.array(lhs, dtype=np.float64))
         return GradArray(lhs._array - self._array, grad_op=AddGrad(lhs, -self))
     
     def __mul__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
