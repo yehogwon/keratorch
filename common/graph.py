@@ -25,9 +25,13 @@ class GraphNode:
     
     def __dot_language(self) -> str: 
         dot = ''
+        dot += f'"{id(self.array)}" [ label = "{self.array._name} {self.array.shape}" ]'
+        if self.array._grad_op is not None:
+            dot += f'"{id(self.array._grad_op)}" [ label = "{self.array._grad_op}", fillcolor = "gray", style=filled ]'
         for child in self.children: 
-            dot += f'"{self.array._name} {self.array.shape}" -> "{child.array._name} {child.array.shape}" [ label="{self.array._grad_op}"]; \n'
-            dot += child.dot_language_()
+            dot += f'{id(self.array)} -> {id(self.array._grad_op)}; \n'
+            dot += f'{id(self.array._grad_op)} -> {id(child.array)}; \n'
+            dot += child.__dot_language()
         return dot
 
     def dot_language(self) -> str: 
