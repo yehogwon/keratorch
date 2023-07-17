@@ -2,6 +2,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import tempfile
 import graphviz
 
 from common.array import GradArray
@@ -42,6 +43,13 @@ class GraphNode:
     
     def dot_graph(self) -> graphviz.Digraph: 
         return graphviz.Source(self.dot_language())
+    
+    def dot_graph_show(self) -> None: 
+        graph_ = self.dot_graph()
+        with tempfile.NamedTemporaryFile(suffix='.gv') as f:
+            f.write(graph_.source.encode('utf-8'))
+            f.flush()
+            graph_.render(f.name, view=True)
 
 def backward_graph(arr: GradArray) -> GraphNode:
     root = GraphNode(arr)

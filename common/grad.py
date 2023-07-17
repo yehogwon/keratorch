@@ -44,6 +44,7 @@ class TransposeGrad(Grad):
 
 class ScalarMulGrad(Grad): # order: (scalar) * (array)
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
+        # FIXME: derivative w.r.t. scalar should be scalar. 
         return (grad * self._inputs[1]._array, grad * self._inputs[0]._array)
 
 class ElemMulGrad(Grad): 
