@@ -57,15 +57,23 @@ class GradArray:
         return self._grad.item()
 
     def __add__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if isinstance(rhs, Number): 
+            rhs = GradArray(np.array(rhs, dtype=np.float64))
         return GradArray(self._array + rhs._array, grad_op=AddGrad(self, rhs))
     
     def __radd__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if isinstance(lhs, Number):
+            lhs = GradArray(np.array(lhs, dtype=np.float64))
         return GradArray(lhs._array + self._array, grad_op=AddGrad(lhs, self))
     
     def __sub__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if isinstance(rhs, Number):
+            rhs = GradArray(np.array(rhs, dtype=np.float64))
         return GradArray(self._array - rhs._array, grad_op=AddGrad(self, -rhs))
     
     def __rsub__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if isinstance(lhs, Number):
+            lhs = GradArray(np.array(lhs, dtype=np.float64))
         return GradArray(lhs._array - self._array, grad_op=AddGrad(lhs, -self))
     
     def __mul__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
@@ -83,11 +91,15 @@ class GradArray:
         return GradArray(lhs._array * self._array, grad_op=ScalarMulGrad(lhs, self))
     
     def __truediv__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
-        if isinstance(rhs, Number):
-            pass
-        else: 
+        if not isinstance(rhs, Number):
             raise TypeError(f"unsupported type {type(rhs)}")
         return self * (1 / rhs)
+    
+    def __rtruediv__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
+        if not isinstance(lhs, Number):
+            raise TypeError(f"unsupported type {type(rhs)}")
+        inv = GradArray(np.array(1 / self._array, dtype=np.float64), grad_op=PowerGrad(self, -1))
+        return lhs * inv
     
     def __matmul__(self, rhs: 'GradArray') -> 'GradArray':
         return GradArray(self._array @ rhs._array, grad_op=MatMulGrad(self, rhs))
@@ -115,3 +127,6 @@ def sum(arr: GradArray, axis: int) -> GradArray:
 
 def l2_norm_square(arr: GradArray, axis: int) -> GradArray: 
     return sum(arr ** 2, axis=axis)
+
+def exp(arr: GradArray) -> GradArray: 
+    return GradArray(np.exp(arr._array), grad_op=ExpGrad(arr))

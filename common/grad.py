@@ -65,3 +65,7 @@ class PowerGrad(Grad):
     
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
         return (grad * self._exp * np.power(self._inputs[0]._array, self._exp - 1), )
+
+class ExpGrad(Grad): 
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
+        return (grad * np.exp(self._inputs[0]._array), )
