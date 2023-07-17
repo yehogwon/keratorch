@@ -2,9 +2,6 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from typing import List
-from random import randint
-
 from common.array import GradArray
 
 class GraphNode: 
@@ -18,7 +15,7 @@ class GraphNode:
     def __repr__(self) -> str:
         return f'GraphNode({self.array} : ({len(self.children)})'
     
-    def deep_string(self, prefix: str='') -> str: 
+    def backward_string(self, prefix: str='') -> str: 
         string = prefix + str(self) + '\n'
         for child in self.children: 
             string += child.deep_string(prefix + '-- ')
