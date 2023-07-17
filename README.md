@@ -35,6 +35,7 @@ This project is written in Python. The main dependencies are `numpy`.
     - [x] Reshape
     - [x] Backward Propagation
     - [ ] Element-wise Multiplication
+    - [ ] Max / Min
     - [ ] Indexing
     - [ ] Slicing
     - [ ] In-place operations support
@@ -49,6 +50,7 @@ This project is written in Python. The main dependencies are `numpy`.
     - [x] Sum
     - [x] Power
     - [ ] Element-wise Multiplication
+    - [ ] Max / Min
     - [ ] Indexing
     - [ ] Slicing
 - [x] Overall backbone structure of the project
