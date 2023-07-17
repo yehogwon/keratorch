@@ -11,7 +11,7 @@ from numbers import Number
 
 from common.grad import *
 
-# FIXME: What if :: A = A + B
+# FIRE: What if :: A = A + B
 class GradArray: 
     def __init__(self, array: np.ndarray, grad: Optional[np.ndarray]=None, grad_op: Optional[Grad]=None, name: str='') -> None:
         self._array: np.ndarray = array
@@ -86,12 +86,11 @@ class GradArray:
             lhs = GradArray(np.array(lhs, dtype=np.float64))
         return GradArray(lhs._array - self._array, grad_op=AddGrad(lhs, -self), name=f'{lhs._name} - {self._name}')
     
-    # TODO: check if elementwise operation & reciprocal works properly
     def __mul__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number):
             rhs = GradArray(np.array(rhs, dtype=np.float64))
             grad = ScalarMulGrad(rhs, self)
-        else: 
+        else: # FIXME: scalar multiplication often becomes element-wise multiplication
             grad = ElemMulGrad(self, rhs)
         return GradArray(self._array * rhs._array, grad_op=grad, name=f'{self._name} * {rhs._name}')
     
