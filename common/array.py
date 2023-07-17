@@ -10,7 +10,6 @@ from typing import Optional, Union, Any, Tuple, List
 from numbers import Number
 
 from common.grad import *
-from util import matrix
 
 # FIXME: What if :: A = A + B
 class GradArray: 
@@ -19,6 +18,17 @@ class GradArray:
         self._grad: np.ndarray = grad
         self._grad_op: Grad = grad_op
         self._name: str = name
+
+        if self._name == '': 
+            try: 
+                self._name = self.item()
+            except: 
+                if self.n_dim == 1: 
+                    self._name = 'vector'
+                elif self.n_dim == 2: 
+                    self._name = 'matrix'
+                else: 
+                    self._name = 'tensor'
     
     def backward(self, grad: np.ndarray) -> None:
         self._grad = grad
@@ -48,7 +58,7 @@ class GradArray:
     @property
     def T(self) -> 'GradArray':
         grad_T = None if self._grad is None else self._grad.T
-        return GradArray(self._array.copy().T, grad_T, grad_op=TransposeGrad(self))
+        return GradArray(self._array.copy().T, grad_T, grad_op=TransposeGrad(self), name=f'{self._name}.T')
     
     def item(self) -> Number: 
         return self._array.item()
@@ -59,22 +69,22 @@ class GradArray:
     def __add__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number): 
             rhs = GradArray(np.array(rhs, dtype=np.float64))
-        return GradArray(self._array + rhs._array, grad_op=AddGrad(self, rhs))
+        return GradArray(self._array + rhs._array, grad_op=AddGrad(self, rhs), name=f'{self._name} + {rhs._name}')
     
     def __radd__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(lhs, Number):
             lhs = GradArray(np.array(lhs, dtype=np.float64))
-        return GradArray(lhs._array + self._array, grad_op=AddGrad(lhs, self))
+        return GradArray(lhs._array + self._array, grad_op=AddGrad(lhs, self), name=f'{lhs._name} + {self._name}')
     
     def __sub__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number):
             rhs = GradArray(np.array(rhs, dtype=np.float64))
-        return GradArray(self._array - rhs._array, grad_op=AddGrad(self, -rhs))
+        return GradArray(self._array - rhs._array, grad_op=AddGrad(self, -rhs), name=f'{self._name} - {rhs._name}')
     
     def __rsub__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(lhs, Number):
             lhs = GradArray(np.array(lhs, dtype=np.float64))
-        return GradArray(lhs._array - self._array, grad_op=AddGrad(lhs, -self))
+        return GradArray(lhs._array - self._array, grad_op=AddGrad(lhs, -self), name=f'{lhs._name} - {self._name}')
     
     # TODO: check if elementwise operation & reciprocal works properly
     def __mul__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
@@ -83,7 +93,7 @@ class GradArray:
             grad = ScalarMulGrad(rhs, self)
         else: 
             grad = ElemMulGrad(self, rhs)
-        return GradArray(self._array * rhs._array, grad_op=grad)
+        return GradArray(self._array * rhs._array, grad_op=grad, name=f'{self._name} * {rhs._name}')
     
     def __rmul__(self, lhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(lhs, Number):
@@ -91,7 +101,7 @@ class GradArray:
             grad = ScalarMulGrad(lhs, self)
         else: 
             grad = ElemMulGrad(lhs, self)
-        return GradArray(lhs._array * self._array, grad_op=grad)
+        return GradArray(lhs._array * self._array, grad_op=grad, name=f'{lhs._name} * {self._name}')
     
     def __truediv__(self, rhs: Union[Number, 'GradArray']) -> 'GradArray':
         if isinstance(rhs, Number): 
@@ -105,17 +115,17 @@ class GradArray:
         return lhs * inv
     
     def __matmul__(self, rhs: 'GradArray') -> 'GradArray':
-        return GradArray(self._array @ rhs._array, grad_op=MatMulGrad(self, rhs))
+        return GradArray(self._array @ rhs._array, grad_op=MatMulGrad(self, rhs), name=f'{self._name} @ {rhs._name}')
     
     def __rmatmul__(self, lhs: 'GradArray') -> 'GradArray':
-        return GradArray(lhs._array @ self._array, grad_op=MatMulGrad(lhs, self))
+        return GradArray(lhs._array @ self._array, grad_op=MatMulGrad(lhs, self), name=f'{lhs._name} @ {self._name}')
     
     def __neg__(self) -> 'GradArray':
         minus = GradArray(np.array(-1, dtype=np.float64))
-        return GradArray(-self._array.copy(), grad_op=ScalarMulGrad(minus, self))
+        return GradArray(-self._array.copy(), grad_op=ScalarMulGrad(minus, self), name=f'-{self._name}')
     
     def __pow__(self, exponent: float) -> 'GradArray':
-        return GradArray(np.power(self._array, exponent), grad_op=PowerGrad(self, exponent))
+        return GradArray(np.power(self._array, exponent), grad_op=PowerGrad(self, exponent), name=f'{self._name} ** {exponent}')
     
     def __repr__(self) -> str:
         return f'GradArray(name={self._name}, shape={self.shape}, grad_op={self._grad_op.__class__.__name__})'
