@@ -137,6 +137,12 @@ def expand(arr: GradArray, dim: int) -> GradArray: # only supports vector to 2-d
 def sum(arr: GradArray, axis: int) -> GradArray: 
     return GradArray(np.sum(arr._array, axis=axis), grad_op=SumGrad(arr))
 
+def min(arr: GradArray, axis: int) -> GradArray: 
+    return GradArray(np.min(arr._array, axis=axis), grad_op=MinGrad(arr, axis=axis))
+
+def max(arr: GradArray, axis: int) -> GradArray: 
+    return GradArray(np.max(arr._array, axis=axis), grad_op=MaxGrad(arr, axis=axis))
+
 def l2_norm_square(arr: GradArray, axis: int) -> GradArray: 
     return sum(arr ** 2, axis=axis)
 
