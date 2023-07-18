@@ -6,9 +6,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from abc import *
 import numpy as np
 
-from typing import Any, Callable, List, Tuple
+from typing import List, Tuple
 
-from common.array import GradArray, exp
+from common.array import GradArray
 from common.layer import Layer
 from common.grad import Grad
 

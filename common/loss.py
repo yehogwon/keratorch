@@ -3,9 +3,8 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from abc import *
-import numpy as np
 
-from typing import Any, Union
+from typing import Any
 from common.array import GradArray, sum, l2_norm_square
 
 class Loss(metaclass=ABCMeta): 

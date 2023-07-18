@@ -3,7 +3,6 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from abc import *
-import numpy as np
 from typing import Any, Union, Tuple, List
 
 from common.array import GradArray

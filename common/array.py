@@ -6,7 +6,7 @@ from abc import *
 
 import numpy as np
 
-from typing import Optional, Union, Any, Tuple, List
+from typing import Optional, Union, Any, Tuple
 from numbers import Number
 
 from common.grad import *
