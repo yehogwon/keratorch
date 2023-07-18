@@ -102,7 +102,7 @@ $ conda activate keratorch
   - [x] SGD
   - [ ] Momentum
   - [ ] RMSProp
-  - [ ] Adam
+  - [x] Adam
 - [ ] 🖥️ Demo
   - [x] OR binary classification
   - [x] XOR binary classification

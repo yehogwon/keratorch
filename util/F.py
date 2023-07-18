@@ -12,3 +12,6 @@ def tanh(x: np.ndarray) -> np.ndarray:
 
 def relu(x: np.ndarray) -> np.ndarray: 
     return np.maximum(0, x)
+
+def l2_norm(x: np.ndarray) -> np.ndarray: 
+    return np.linalg.norm(x)
