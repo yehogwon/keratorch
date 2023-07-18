@@ -39,6 +39,7 @@ This project is written in Python. The main dependencies are `numpy`.
     - [ ] Indexing
     - [ ] Slicing
     - [ ] In-place operations support
+    - [ ] various dtype support (not only np.float64)
   - [x] Gradient Calculation
     - [x] Identity
     - [x] Add (variable number of inputs)
