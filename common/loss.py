@@ -16,10 +16,6 @@ class Loss(metaclass=ABCMeta):
     def forward(self, y: GradArray, gt: GradArray) -> float: 
         pass
 
-    @abstractmethod
-    def backward(self, grad: float=1) -> GradArray: 
-        pass
-
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         return self.forward(*args, **kwds)
 
@@ -32,7 +28,3 @@ class MSE(Loss):
         self.gt = gt
         self.out = sum(l2_norm_square(y - gt, axis=1), axis=0) / y.shape[0]
         return self.out
-
-    def backward(self, grad: float=1) -> GradArray: 
-        self.out.backward(np.array(grad, dtype=np.float64))
-        return self.y._grad
