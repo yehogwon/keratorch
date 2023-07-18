@@ -1,3 +1,5 @@
+![](figure/keratorch_logo.png)
+
 # KeraTorch : PyTorch-Like ML Framework
 
 ## Introduction
