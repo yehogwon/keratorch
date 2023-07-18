@@ -30,7 +30,7 @@ class GradArray:
                 else: 
                     self._name = 'tensor'
     
-    def backward(self, grad: np.ndarray) -> None:
+    def backward(self, grad: np.ndarray=1) -> None:
         self._grad = grad
         if self._grad_op and not self._grad_op.is_leaf(): 
             upstream_grads = self._grad_op(self._grad)
