@@ -67,20 +67,20 @@ class SumGrad(Grad):
         return (np.tile(grad, reps), )
 
 class MinGrad(Grad): 
-    def __init__(self, input_, axis) -> None:
+    def __init__(self, input_, y) -> None:
         super().__init__(input_)
-        self._axis = axis
+        self._y = y
 
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
-        return (np.where(self._inputs[0]._array == self._inputs[0]._array.min(axis=self._axis, keepdims=True), grad, 0), )
+        return (grad * (self._inputs[0]._array <= self._y), )
 
 class MaxGrad(Grad): 
-    def __init__(self, input_, axis) -> None:
+    def __init__(self, input_, y) -> None:
         super().__init__(input_)
-        self._axis = axis
+        self._y = y
 
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
-        return (np.where(self._inputs[0]._array == self._inputs[0]._array.max(axis=self._axis, keepdims=True), grad, 0), )
+        return (grad * (self._inputs[0]._array >= self._y), )
 
 class PowerGrad(Grad): 
     def __init__(self, input_, exp) -> None:
