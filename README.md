@@ -12,9 +12,32 @@ This project is inspired by the Youtube video by [Omar Aflak](https://www.youtub
 
 In this project, auto-grad framework is supported. The framework is inspired by [PyTorch Autograd](https://pytorch.org/docs/stable/autograd.html). I am not sure if my version works similarly to PyTorch, but it is a good practice to implement auto-grad framework. My implementation is independent to PyTorch's one, so it may be poor in performance compared to PyTorch's one. 
 
-## Technical Details
+## Environment Setup
 
-This project is written in Python. The main dependencies are `numpy`. 
+This project is written in Python. The main dependencies are `numpy`, `matplotlib`, `tqdm`, and `graphviz`. You can install the whole dependencies by running the following command.
+
+```bash
+$ pip install -r requirements.txt
+```
+
+Note that you might need to install `graphviz` manually. 
+
+For Linux, 
+```bash
+$ sudo apt-get install graphviz
+```
+
+For Mac, 
+```zsh
+$ brew install graphviz
+```
+
+Also, this project is built on Python 3.8.17. If you are using `conda`, you can create a new virtual environment for this project by running the following command.
+
+```bash
+$ conda create -n keratorch python=3.8.17
+$ conda activate keratorch
+```
 
 ## Milestones
 
