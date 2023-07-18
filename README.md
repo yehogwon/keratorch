@@ -35,7 +35,7 @@ This project is written in Python. The main dependencies are `numpy`.
     - [x] Reshape
     - [x] Backward Propagation
     - [x] Element-wise Multiplication
-    - [ ] Max / Min
+    - [x] Max / Min
     - [ ] Indexing
     - [ ] Slicing
     - [ ] In-place operations support
@@ -50,7 +50,7 @@ This project is written in Python. The main dependencies are `numpy`.
     - [x] Sum
     - [x] Power
     - [x] Element-wise Multiplication
-    - [ ] Max / Min
+    - [x] Max / Min
     - [ ] Indexing
     - [ ] Slicing
 - [x] Overall backbone structure
@@ -65,7 +65,7 @@ This project is written in Python. The main dependencies are `numpy`.
   - [ ] Average pooling layer
   - [ ] Batch normalization layer
 - [ ] activation functions (and their derivatives)
-  - [ ] ReLU
+  - [x] ReLU
   - [x] Sigmoid
   - [x] Tanh
   - [ ] Softmax

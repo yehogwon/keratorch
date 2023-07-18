@@ -42,3 +42,11 @@ class Tanh(Activation):
 class TanhGrad(Grad): 
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
         return (grad * (1 - F.tanh(self._inputs[0]._array) ** 2), )
+
+class ReLU(Activation): 
+    def op(sefl, x: GradArray) -> GradArray: 
+        return GradArray(F.relu(x._array), grad_op=ReLUGrad(x), name='relu')
+
+class ReLUGrad(Grad): 
+    def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]: 
+        return (grad * (self._inputs[0]._array > 0), )

@@ -9,3 +9,6 @@ def sigmoid(x: np.ndarray) -> np.ndarray:
 
 def tanh(x: np.ndarray) -> np.ndarray:
     return np.tanh(x)
+
+def relu(x: np.ndarray) -> np.ndarray: 
+    return np.maximum(0, x)
