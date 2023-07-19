@@ -12,6 +12,43 @@ This project is inspired by the Youtube video by [Omar Aflak](https://www.youtub
 
 In this project, auto-grad framework is supported. The framework is inspired by [PyTorch Autograd](https://pytorch.org/docs/stable/autograd.html). I am not sure if my version works similarly to PyTorch, but it is a good practice to implement auto-grad framework. My implementation is independent to PyTorch's one, so it may be poor in performance compared to PyTorch's one. 
 
+## ⛰️ `GradArray`
+
+`GradArray` is a wrapper class of `np.ndarray` that supports auto-grad. It contains the array itself, (accumulately) computed gradient on the array, and the computational graph (i.e., how the array is computed). 
+
+Here is a demo code of `GradArray`. 
+
+```python
+import numpy as np
+from common.array import GradArray
+
+A = GradArray(np.array([[2, 3], [5, 6]], dtype=np.float32), name='A')
+B = GradArray(np.array([3, 5], dtype=np.float32).reshape(2, 1), name='B')
+C = A @ B
+
+print(C)
+print(C._array)
+
+C.backward(np.ones_like(C._array)) # ∂f/∂C = 1
+
+print(A._grad) # ∂f/∂A
+print(B._grad) # ∂f/∂B
+```
+output: 
+```py
+GradArray(name=A @ B, shape=(2, 1), grad_op=MatMulGrad)
+
+[[21.] # C
+ [45.]]
+
+[[3. 5.] # gradient on A
+ [3. 5.]]
+
+[[7.] # gradient on B
+ [9.]]
+```
+
+
 ## Environment Setup
 
 This project is written in Python. The main dependencies are `numpy`, `matplotlib`, `tqdm`, and `graphviz`. You can install the whole dependencies by running the following command.
