@@ -127,7 +127,7 @@ class GradArray:
         return GradArray(np.power(self._array, exponent), grad_op=PowerGrad(self, exponent), name=f'{self._name} ** {exponent}')
     
     def __repr__(self) -> str:
-        return f'GradArray(name={self._name}, shape={self.shape}, grad_op={self._grad_op.__class__.__name__})'
+        return f'GradArray(name={self._name}, shape={self.shape}, grad_op={self._grad_op})'
 
 def expand(arr: GradArray, dim: int) -> GradArray: # only supports vector to 2-dim array (matrix)
     if arr.n_dim > 1: 

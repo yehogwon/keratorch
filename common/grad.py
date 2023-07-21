@@ -11,6 +11,10 @@ from numbers import Number
 
 class Grad(metaclass=ABCMeta): 
     def __init__(self, *inputs) -> None:
+        if 'grad_n' in self.__class__.__dict__: 
+            self.__class__.grad_n += 1
+        else:
+            self.__class__.grad_n = 0
         self._inputs = inputs
     
     @abstractmethod
@@ -24,7 +28,7 @@ class Grad(metaclass=ABCMeta):
         return len(self._inputs) == 0
     
     def __repr__(self) -> str:
-        return self.__class__.__name__
+        return self.__class__.__name__ + str(self.__class__.grad_n)
 
 class IdentityGrad(Grad):
     def backward(self, grad: np.ndarray) -> Tuple[np.ndarray]:
